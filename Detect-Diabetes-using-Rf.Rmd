@@ -1,3 +1,14 @@
+---
+title: "Detect Patient Diabetes"
+author: "Dipan Sadekeen"
+date: "7/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
 library(neuralnet)
 library(caret)
 library(tidyverse)
@@ -5,46 +16,46 @@ library(mlbench)
 library(e1071)
 
 
+```
+```{r}
 data("PimaIndiansDiabetes")
 df<-PimaIndiansDiabetes
 str(df)
-?PimaIndiansDiabetes
+
 
 ggplot(df,aes(diabetes,fill=factor(diabetes)))+
            geom_bar()
 
 df$binary<-ifelse(df$diabetes=="neg",0,1)       
 str(df)
+```
 
 
+```{r}
 rows<-createDataPartition(df$binary,times = 1,p=0.7,list=F)
 train<-df[rows,]
 test<-df[-rows,]
-
-dim(train)
-dim(test)
-
-str(train)
-
-names(train)
-
-train<-train[,-9] # i removed the diabetes changed before
+```
+```{r}
+train<-train[,-9] 
 
 test<- test[,-9]
-
-str(train)
-str(test)
-
-
+```
+```{r}
 model<-train(as.factor(binary)~.,data=train,
              method="rf",
              trcontrol=trainControl(method = "repeatedcv"))
 
 model
+```
 
-pred_test<-predict(model,test)
+```{r}
+pred_train<-predict(model,train)
 pred_test<-predict(model,test)
 pred_train
-
+```
+```{r}
 confusionMatrix(pred_train,as.factor(train$binary))
 confusionMatrix(pred_test,as.factor(test$binary))
+```
+
